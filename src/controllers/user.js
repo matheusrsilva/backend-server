@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 const { database, fetch, update, getValidToken } = require('../config/database');
-const { generateToken } = require('../utils');
+const { generateToken, validateEmail } = require('../utils');
 
 exports.authorize = async (method, params, headers) => {
   switch(method){
@@ -28,6 +28,12 @@ exports.create = async (body) => {
     fullname,
     date_of_birth
   } = body;
+
+  if(!(username && validateEmail(username))) return new Error('Invalid Username, must be a valid email');
+  const [oldUser] = await fetch('user', {username});
+  if(oldUser) return new Error('Email is in use already');
+  if(!password) return new Error('Password is Required');
+  if(!fullname) return new Error('Fullname is Required');
 
   const [user_id] = (await database('user').insert({
     username,
