@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
 });
 
 router.get('/:id', async (req, res, next) => {
-  const user = await controller.read(req.params.id);
+  const user = await controller.authorizedRead(req.params.id, req.headers.authorization);
   responseTreatment(user,res,next, "Can't get this user");
 });
 

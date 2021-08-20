@@ -5,9 +5,6 @@ const { generateToken, validateEmail, cryptPassword, checkPassword } = require('
 
 exports.authorize = async (method, params, headers) => {
   switch (method) {
-    case 'GET': {
-      if (!params.id) return true;
-    }
     case 'PUT': {
       const token = await getValidToken(headers.authorization)
       if (token instanceof Error) return token;
@@ -19,9 +16,24 @@ exports.authorize = async (method, params, headers) => {
   }
 }
 
+exports.authorizedRead = async (id, token) => {
+  const foundToken = await getValidToken(token);
+  if (foundToken instanceof Error) return foundToken;
+
+  const user = await read(id);
+
+  if (user && (foundToken.user_id !== user.id)){
+    delete user.username;
+    delete user.created;
+    delete user.modified;
+  }
+
+  return user;
+}
+
 const read = async (id, keep_password = false) => {
   const [user] = await fetch('user', { id });
-  if (!keep_password)
+  if (user && !keep_password)
     delete user.password;
   return user;
 }
