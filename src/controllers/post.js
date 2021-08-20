@@ -25,6 +25,7 @@ exports.authorize = async (method, params, headers) => {
 
 const read = async (id) => {
   const [post] = await fetch('post', { id });
+  if (post) post.private = !! post.private;
   return post;
 }
 exports.read = read;
