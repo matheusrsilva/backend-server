@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 const { database, fetch, update, getValidToken } = require('../config/database');
-const { generateToken, validateEmail } = require('../utils');
+const { generateToken, validateEmail, cryptPassword, checkPassword } = require('../utils');
 
 exports.authorize = async (method, params, headers) => {
   switch(method){
@@ -35,9 +35,14 @@ exports.create = async (body) => {
   if(!password) return new Error('Password is Required');
   if(!fullname) return new Error('Fullname is Required');
 
+  const cryptoPass = await cryptPassword(password, (res => {
+    console.log(res);
+  })); 
+  console.log(cryptoPass);
+
   const [user_id] = (await database('user').insert({
     username,
-    password,
+    password: cryptoPass,
     fullname,
     date_of_birth
   }) || null);
@@ -65,7 +70,12 @@ exports.login = async (body) => {
     password,
   } = body;
 
-  const [user] = await fetch('user', { username, password })
+  const [user] = await fetch('user', { username});
+  if (!user) return new Error("User is not registered");
+
+  const isValidPassword = await checkPassword(password, user.password);
+  if (!isValidPassword) return new Error("User/Password doesn't match");
+
   const [token] = await fetch('token', { user_id: user.id })
   
   if (token) {

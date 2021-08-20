@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+var bcrypt = require('bcrypt');
 
 exports.generateToken = (size = 20) => crypto.randomBytes(size).toString('hex');
 
@@ -14,3 +15,12 @@ exports.responseTreatment = (object, res, next, genericError = "Can't access thi
   }
   else next(new Error(genericError));
 }
+
+
+exports.cryptPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10)
+  const hash = await bcrypt.hash(password, salt)
+  return hash;
+}
+
+exports.checkPassword = (password, hash) => bcrypt.compare(password, hash)
