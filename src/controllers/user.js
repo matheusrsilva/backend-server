@@ -62,10 +62,7 @@ exports.create = async (body) => {
   if (!password) return new Error('Password is Required');
   if (!fullname) return new Error('Fullname is Required');
 
-  const cryptoPass = await cryptPassword(password, (res => {
-    console.log(res);
-  }));
-  console.log(cryptoPass);
+  const cryptoPass = await cryptPassword(password);
 
   const [user_id] = (await database('user').insert({
     username,
