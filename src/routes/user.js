@@ -21,6 +21,11 @@ router.post('/', async (req, res, next) => {
   responseTreatment(user,res,next, "Can't create user");
 });
 
+router.get('/', async (req, res, next) => {
+  const user = await controller.readByToken(req.headers.authorization);
+  responseTreatment(user,res,next, "Can't get this user");
+});
+
 router.get('/:id', async (req, res, next) => {
   const user = await controller.read(req.params.id);
   responseTreatment(user,res,next, "Can't get this user");
