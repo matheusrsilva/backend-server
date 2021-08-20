@@ -18,8 +18,6 @@ exports.authorize = async (method, params, headers) => {
 
 exports.authorizedRead = async (id, token) => {
   const foundToken = await getValidToken(token);
-  if (foundToken instanceof Error) return foundToken;
-
   const user = await read(id);
 
   if (user && (foundToken.user_id !== user.id)){
