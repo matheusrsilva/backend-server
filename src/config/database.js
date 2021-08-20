@@ -18,6 +18,7 @@ const update = async (table , fields, id) => database(table).where('id', id).upd
 exports.update = update;
 
 const getValidToken = async (token) => {
+  if (!token) return (new Error('Invalid Token'));
   const [foundToken] = await fetch('token', { token });
   if (!foundToken) return (new Error('Invalid Token'));
   if (moment(foundToken.expiration, 'YYYY-MM-DD HH:mm:ss').isBefore(moment())) {
