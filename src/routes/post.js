@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/post')
+const controller = require('../controllers/post');
+const { responseTreatment } = require('../utils');
+
 
 router.authorize = async (method, params, headers) => {
   if(['POST', 'PUT','DELETE'].includes(method)){
@@ -11,26 +13,22 @@ router.authorize = async (method, params, headers) => {
 
 router.post('/', async (req, res, next) => {
   const post = await controller.create(req.body, req.headers.authorization);
-  if (post) res.status(201).send(post)
-  else next(new Error("Cant create post"));
+  responseTreatment(post,res,next, "Cant create post");
 });
 
 router.get('/:id', async (req, res, next) => {
   const post = await controller.authorizedRead(req.params.id, req.headers.authorization);
-  if (post) res.status(201).send(post)
-  else next(new Error("Cant get this post"));
+  responseTreatment(post,res,next, "Cant get this post");
 });
 
 router.put('/:id', async (req, res, next) => {
   const post = await controller.update(req.params.id, req.body);
-  if (post) res.status(201).send(post)
-  else next(new Error("Cant update"));
+  responseTreatment(post,res,next, "Cant update this post");
 });
 
 router.delete('/:id', async (req, res, next) => {
   const post = await controller.delete(req.params.id);
-  if (post) res.status(201).send(post)
-  else next(new Error("Cant delete"));
+  responseTreatment(post,res,next, "Cant delete this post");
 });
 
 router.patch('/:id', (req, res, next) => {

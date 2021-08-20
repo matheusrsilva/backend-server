@@ -45,6 +45,8 @@ exports.create = async (body, token) => {
     private,
   } = body;
 
+  if (!content) return new Error('content is required'); 
+
   const [post_id] = (await database('post').insert({
     user_id,
     content,
