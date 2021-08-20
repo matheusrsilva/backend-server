@@ -18,7 +18,11 @@ exports.authorize = async (method, params, headers) => {
   
 }
 
-const read = async (id) => (await fetch('user', { id }) || [null])[0];
+const read = async (id) => {
+  const [user] = await fetch('user', { id });
+  delete user.password;
+  return user; 
+}
 exports.read = read;
 
 exports.create = async (body) => {
