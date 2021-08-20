@@ -13,9 +13,12 @@ Most of user data is private, with some exceptions.
 
 ### How to use
 - `Content-Type` is `application/json`, so  body content must be `json`
+- You can import the `./test/Teste.postman_collection.json` Collection on Postman to make tests easier, all endpoints are configured and almost ready-to-use.
 - For authenticated use, you must set Authorization on header from on the login return.
     - In this version, to get an valid token, you have to login.
     - If your token is expired, the login endpoint will generate a new one.
+    - If you are using the postman collection from the project, set the `User_Valid_Token` with the given token
+ 
 
 
 ### Valid endpoints
